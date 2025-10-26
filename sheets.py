@@ -102,7 +102,7 @@ def mark_as_notified(user_id):
 # ----------------------------
 # إضافة المتربص إلى membres بعد الضغط على الرابط
 # ----------------------------
-def add_to_membres(user_id, nom, prenom, username):
+def add_to_membres(user_id, nom, prenom, Link,numero):
     sheet = connect_sheet("membres")
     users = sheet.col_values(1)
     str_id = str(user_id)
@@ -110,7 +110,7 @@ def add_to_membres(user_id, nom, prenom, username):
     # إذا لم يكن موجود مسبقًا
     if str_id not in users:
         sheet.append_row([
-            str_id, nom, prenom, username, "", "Niveau 1", datetime.now().strftime("%Y-%m-%d"),
+            str_id, nom, prenom, Link, numero, "", "Niveau 1","","","", datetime.now().strftime("%Y-%m-%d %H:%M"),
             0, 0, "", 0,  # Nbr messages, Live, Dernier message, Interaction
             *["" for _ in range(35)]  # أعمدة للمستويات الأخرى
         ])

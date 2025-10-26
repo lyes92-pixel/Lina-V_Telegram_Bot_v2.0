@@ -153,7 +153,7 @@ async def check_inscription_loop():
             # ✅ تحقق من الشرطين: لم يتم الإشعار + مقبول
             if not notified and statut == "Inscrit":
                 try:
-                    add_to_membres(user["ID"], user["Nom"], user["Prénom"], user["Lien"])
+                    add_to_membres(user["ID"], user["Nom"], user["Prénom"], user["Lien"],user["Numero"])
                     await bot.send_message(
                         user["ID"],
                         f"🎉 مرحبًا {user['Prénom']} {user['Nom']}!\n"

@@ -1,7 +1,7 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
-from config import SHEET_ID, GOOGLE_CREDENTIALS_FILE
+from Sheets.config import SHEET_ID, GOOGLE_CREDENTIALS_FILE
 
 # ----------------------------
 # الاتصال بـ Google Sheet
@@ -171,6 +171,46 @@ def update_activity(user_id, group_name, live=False):
     if live and live_col:
         live_count = int(sheet.cell(row, live_col).value or 0) + 1
         sheet.update_cell(row, live_col, live_count)
+
+
+def log_first_entry(user_id, group_name):
+    sheet = connect_sheet("membres")
+    users = sheet.col_values(1)
+    str_id = str(user_id)
+
+    if str_id not in users:
+        return
+
+    row = users.index(str_id) + 1
+    headers = sheet.row_values(1)
+
+    # تحديد العمود حسب المجموعة
+    if "1" in group_name:
+        col_name = "Entrée Niveau 1"
+    elif "2" in group_name:
+        col_name = "Entrée Niveau 2"
+    elif "3" in group_name:
+        col_name = "Entrée Niveau 3"
+    elif "VIP" in group_name.upper():
+        col_name = "Entrée Niveau 4"
+    elif "VIP" in group_name.upper():
+        col_name = "Entrée VIP"
+    else:
+        return
+
+    # إذا لم يوجد العمود، أضفه
+    if col_name not in headers:
+        sheet.update_cell(1, len(headers) + 1, col_name)
+        headers.append(col_name)
+
+    col_idx = headers.index(col_name) + 1
+    cell_value = sheet.cell(row, col_idx).value
+
+    # سجّل الوقت فقط إذا لم يكن موجودًا من قبل
+    if not cell_value:
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+        sheet.update_cell(row, col_idx, now_str)
+
 
 # ----------------------------
 # 🧠 جلب رسالة من Template حسب اللغة
